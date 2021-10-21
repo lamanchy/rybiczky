@@ -1,0 +1,3 @@
+# Naše hra rybiczky
+
+work in progres...
