@@ -48,6 +48,44 @@ class Fish(Drawable):
     def turn_right(self):
         self.turn(0.001)
 
+    def slow_down(self):
+        self.speed = 'slowing'
+
+    def accelerate(self):
+        self.speed = 'accelerating'
+
+    def reset_speed(self):
+        self.speed = 'normal'
+
+    def move(self, ratio):
+        if self.speed == 'normal':
+            if self.actual_speed <= self.normal_speed:
+                # speed up up to normal speed
+                self.acceleration += self.acceleration_force
+                self.acceleration = min(self.acceleration, (self.normal_speed - self.actual_speed) / 2)
+            else:
+                # slow down linearly to normal speed
+                self.acceleration = -self.inertia_force
+
+        if self.speed == 'accelerating':
+            # accelerate to maximum speed
+            self.acceleration += self.acceleration_force
+            self.acceleration = min(self.acceleration, (self.maximum_speed - self.actual_speed) / 2)
+
+        if self.speed == 'slowing':
+            # slow down down to minimum speed
+            self.acceleration -= self.deceleration_force
+            if abs(self.acceleration) > (self.actual_speed - self.minimum_speed) / 2:
+                self.acceleration = -(self.actual_speed - self.minimum_speed) / 2
+
+        # determine speed change based on self.acceleration
+        self.actual_speed += self.acceleration * ratio
+        self.swim(ratio * self.actual_speed)
+        self.turn(0.01 * self.turning)
+
+        print(f"{self.speed=}, {self.actual_speed=}, {self.acceleration=}")
+
+
 class PlayerFish(Fish):
     def __init__(self):
         myimage = pygame.image.load("fish.jpg")
@@ -55,7 +93,7 @@ class PlayerFish(Fish):
         super().__init__([0, 0], [1, 0], myimage)
 
 
-fish = PlayerFish()
+fish = Shark()
 
 pygame.init()
 
@@ -66,6 +104,7 @@ x, y = 250, 250
 
 running = True
 actual_time = time()
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -73,18 +112,22 @@ while running:
 
     keys = pygame.key.get_pressed()
 
-    duration = time() - actual_time
+    if keys[pygame.K_w] or keys[pygame.K_UP]:
+        fish.accelerate()
+    elif keys[pygame.K_s] or keys[pygame.K_DOWN]:
+        fish.slow_down()
+    else:
+        fish.reset_speed()
 
-    if keys[pygame.K_w]:
-        fish.forward()
-    if keys[pygame.K_s]:
-        fish.backward()
-    if keys[pygame.K_a]:
+    if keys[pygame.K_a] or keys[pygame.K_LEFT]:
         fish.turn_left()
-    if keys[pygame.K_d]:
+    elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
         fish.turn_right()
+    else:
+        fish.reset_turing()
 
-    actual_time = time()
+    ratio = duration / (1 / FPS)
+    fish.move(ratio)
 
     screen.fill((255, 255, 255))
     fish.draw()
