@@ -3,8 +3,12 @@ from time import sleep, time
 
 import pygame
 
+FPS = 30
+
+
 class Drawable:
     screen = None
+
     def __init__(self, position, direction, image, scale=1):
         self.position = position
         self.direction = direction
@@ -15,18 +19,31 @@ class Drawable:
         angle = atan2(*reversed(self.direction)) * 180 / pi * -1
         rotated_image = pygame.transform.rotate(self.image, angle)
         center = rotated_image.get_rect().center
-        print(rotated_image.get_rect(), center)
 
-        Drawable.screen.blit(rotated_image, [self.position[0]-center[0], self.position[1]-center[1]])
+        Drawable.screen.blit(rotated_image, [self.position[0] - center[0], self.position[1] - center[1]])
+
 
 class Fish(Drawable):
-    def __init__(self, position, direction, image, speed=0.1):
+    acceleration_force = 0.01
+    deceleration_force = 0.01
+    inertia_force = 0.01
+
+    normal_speed = 2
+    maximum_speed = 5
+    minimum_speed = 1
+
+    turning_speed = 0.01
+
+    def __init__(self, position, direction, image):
         super().__init__(position, direction, image)
-        self.speed = speed
+        self.acceleration_mode = 'normal'
+        self.turning = 0
+        self.actual_speed = 1
+        self.acceleration = 0
 
     def swim(self, direction):
-        self.position[0] += self.direction[0] * direction * self.speed
-        self.position[1] += self.direction[1] * direction * self.speed
+        self.position[0] += self.direction[0] * direction
+        self.position[1] += self.direction[1] * direction
 
     def turn(self, angle):
         x1, y1 = self.direction
@@ -36,17 +53,14 @@ class Fish(Drawable):
 
         self.direction = x2, y2
 
-    def forward(self):
-        self.swim(1)
-
-    def backward(self):
-        self.swim(-1)
-
     def turn_left(self):
-        self.turn(-0.001)
+        self.turning = -1
 
     def turn_right(self):
-        self.turn(0.001)
+        self.turning = 1
+
+    def reset_turing(self):
+        self.turning = 0
 
     def slow_down(self):
         self.speed = 'slowing'
@@ -81,31 +95,57 @@ class Fish(Drawable):
         # determine speed change based on self.acceleration
         self.actual_speed += self.acceleration * ratio
         self.swim(ratio * self.actual_speed)
-        self.turn(0.01 * self.turning)
-
-        print(f"{self.speed=}, {self.actual_speed=}, {self.acceleration=}")
+        self.turn(self.turning_speed * self.turning)
 
 
-class PlayerFish(Fish):
+class Whale(Fish):
+    acceleration_force = 0.05
+    deceleration_force = 0.05
+    inertia_force = 0.01
+
+    normal_speed = 1.5
+    maximum_speed = 3
+    minimum_speed = 0.5
+
+    turning_speed = 0.01
+
     def __init__(self):
-        myimage = pygame.image.load("fish.jpg")
+        myimage = pygame.image.load("whale.png")
         myimage = pygame.transform.scale(myimage, (200, 200))
-        super().__init__([0, 0], [1, 0], myimage)
+        super().__init__([400, 400], [1, 0], myimage)
+
+
+class Shark(Fish):
+    acceleration_force = 0.1
+    deceleration_force = 0.01
+    inertia_force = 0.02
+
+    normal_speed = 2
+    maximum_speed = 6
+    minimum_speed = 1.5
+
+    turning_speed = 0.03
+
+    def __init__(self):
+        myimage = pygame.image.load("shark.png")
+        myimage = pygame.transform.scale(myimage, (100, 100))
+        super().__init__([400, 400], [1, 0], myimage)
 
 
 fish = Shark()
 
 pygame.init()
 
-screen = pygame.display.set_mode([500, 500])
+screen = pygame.display.set_mode([800, 800])
 Drawable.screen = screen
-
-x, y = 250, 250
 
 running = True
 actual_time = time()
 
 while running:
+    duration = time() - actual_time
+    actual_time = time()
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -132,5 +172,8 @@ while running:
     screen.fill((255, 255, 255))
     fish.draw()
     pygame.display.flip()
+
+    if duration < 1 / FPS:
+        sleep(1 / FPS - duration)
 
 pygame.quit()
