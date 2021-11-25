@@ -98,7 +98,7 @@ class Fish(Drawable):
         self.turn(self.turning_speed * self.turning)
 
 
-class Whale(Fish):
+class Trout(Fish):
     acceleration_force = 0.05
     deceleration_force = 0.05
     inertia_force = 0.01
@@ -110,7 +110,7 @@ class Whale(Fish):
     turning_speed = 0.01
 
     def __init__(self):
-        myimage = pygame.image.load("whale.png")
+        myimage = pygame.image.load("trout.png")
         myimage = pygame.transform.scale(myimage, (200, 200))
         super().__init__([400, 400], [1, 0], myimage)
 
