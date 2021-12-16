@@ -5,12 +5,12 @@ from src.fish import Fish
 
 
 class PlayerFish(Fish):
-    acceleration_force = 0.2
+    acceleration_force = 0.02
     deceleration_force = 0.05
     inertia_force = 0.01
 
     normal_speed = 1.5
-    maximum_speed = 6
+    maximum_speed = 10
     minimum_speed = 0.5
 
     turning_speed = 0.03
