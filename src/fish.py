@@ -24,6 +24,12 @@ class Fish(Drawable):
         self.acceleration = 0
         self.automatic = automatic
         self.speed = 'normal'
+        self.size = size
+        self.fishes.append(self)
+
+    def get_image_for_draw(self):
+        new_height = (self.size / self.image.get_width()) * self.image.get_height()
+        return pygame.transform.scale(self.image, (self.size, new_height))
 
     def swim(self, direction):
         self.position += self.direction * direction
