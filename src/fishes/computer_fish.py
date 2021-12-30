@@ -1,4 +1,5 @@
-from random import random
+from random import random, randint
+from time import time, sleep
 
 import pygame
 from pygame import Vector2
@@ -18,8 +19,10 @@ class ComputerFish(Fish):
 
     turning_speed = 0.04
 
-    def __init__(self):
-        myimage = pygame.image.load("images/fish2.png")
+    computer_fishes = []
+
+    def __init__(self, size):
+        myimage = pygame.image.load("images/medium_fish.png")
         position = Vector2(SCREEN_SIZE)
         position.x *= random()
         position.y *= random()

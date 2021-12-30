@@ -1,3 +1,4 @@
+from random import randint
 from time import sleep, time
 
 import pygame
@@ -5,12 +6,15 @@ from pygame import Vector2
 
 from src.constants import SCREEN_SIZE, FPS
 from src.drawable import Drawable
+from src.fish import Fish
 from src.fishes.computer_fish import ComputerFish
 from src.fishes.player_fish import PlayerFish
 
 
 def main():
-    computer_fishes = [ComputerFish() for _ in range(50)]
+    for _ in range(50):
+        ComputerFish(randint(50, 300))
+
 
     player_fish = PlayerFish()
     background = Drawable(Vector2(0, 0), Vector2(0, 1), pygame.image.load('images/background.png'))
@@ -33,7 +37,7 @@ def main():
 
         running = handle_events(player_fish, running)
 
-        move_fishes(computer_fishes, duration, player_fish)
+        move_fishes(duration, player_fish)
 
         screen.fill((255, 255, 255))
         Drawable.set_offset(player_fish.position)
@@ -48,12 +52,21 @@ def main():
                 background.position = pos*800 - Vector2(400)
                 background.draw()
 
+        for fish in Fish.fishes:
+            if fish.compute_collisions():
+                if fish == player_fish:
+                    print('you failed')
+                    exit(0)
+                Fish.fishes.remove(fish)
+
+
         player_fish.draw()
-        for fish in computer_fishes:
+        for fish in ComputerFish.fishes:
             fish.draw()
 
-        if computer_fishes:
-            textsurface = myfont.render(f'Remaining: {len(computer_fishes)}', False, (0, 0, 0))
+
+        if ComputerFish.fishes:
+            textsurface = myfont.render(f'Remaining: {len(ComputerFish.fishes)}', False, (0, 0, 0))
             screen.blit(textsurface, (0, 0))
         else:
             if end_time is None:
@@ -72,35 +85,15 @@ def main():
     pygame.quit()
 
 
-def move_fishes(computer_fishes, duration, player_fish):
+def move_fishes(duration, player_fish):
     ratio = duration / (1 / FPS)
     player_fish.move(ratio)
-    for fish in computer_fishes:
-        distance = player_fish.position.distance_to(fish.position)
-        if distance < 50:
-            computer_fishes.remove(fish)
-        if distance < 300:
-            player_fish_position = player_fish.position + 50 * player_fish.direction
-            angle = (fish.position - player_fish_position).angle_to(fish.direction)
-            if angle < 180: angle += 360
-            if angle > 180: angle -= 360
 
-            if angle > 0:
-                fish.turn_left()
-            else:
-                fish.turn_right()
-
-            if abs(angle) > 150:
-                fish.slow_down()
-            else:
-                fish.accelerate()
-            # sdasdasdasdasdasdadw
-
-        if distance > max(*SCREEN_SIZE.xy):
-            vector = player_fish.position - fish.position
-            fish.position = fish.position + 1.9 * vector
-
+    for fish in ComputerFish.computer_fishes:
+        fish.behave(player_fish)
         fish.move(ratio)
+
+
 
 
 def handle_events(player_fish, running):

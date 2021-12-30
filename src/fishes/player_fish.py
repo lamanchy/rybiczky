@@ -16,6 +16,6 @@ class PlayerFish(Fish):
     turning_speed = 0.03
 
     def __init__(self):
-        myimage = pygame.image.load("images/fish.png")
-        super().__init__(Vector2(400, 400), Vector2(1, 0), myimage)
+        myimage = pygame.image.load("images/player_fish.png")
+        super().__init__(Vector2(400, 400), Vector2(1, 0), myimage, 100)
 

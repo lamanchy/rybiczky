@@ -1,5 +1,6 @@
 from math import pi
 from random import random
+import pygame
 
 from pygame import Vector2
 
@@ -17,12 +18,13 @@ class Fish(Drawable):
 
     turning_speed = 0.01
 
-    def __init__(self, position: Vector2, direction: Vector2, image, automatic=False):
+    fishes = []
+
+    def __init__(self, position: Vector2, direction: Vector2, image, size):
         super().__init__(position, direction, image)
         self.turning = 0
         self.actual_speed = self.normal_speed
         self.acceleration = 0
-        self.automatic = automatic
         self.speed = 'normal'
         self.size = size
         self.fishes.append(self)
@@ -55,21 +57,15 @@ class Fish(Drawable):
     def reset_speed(self):
         self.speed = 'normal'
 
-    def move(self, ratio):
-        if self.automatic:
-            if random() < 0.01:
-                self.accelerate()
-            if random() < 0.01:
-                self.slow_down()
-            if random() < 0.01:
-                self.reset_speed()
-            if random() < 0.01:
-                self.turn_left()
-            if random() < 0.01:
-                self.turn_right()
-            if random() < 0.01:
-                self.reset_turing()
+    def compute_collisions(self):
+        for fish in self.fishes:
+            if fish.size > self.size:
+                distance = fish.position.distance_to(self.position)
+                if distance < 50:
+                    if
+                    return True
 
+    def move(self, ratio):
         if self.speed == 'normal':
             if self.actual_speed <= self.normal_speed:
                 # speed up up to normal speed

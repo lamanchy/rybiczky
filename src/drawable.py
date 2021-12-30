@@ -13,14 +13,15 @@ class Drawable:
         self.image = image
         self.scale = scale
 
+    def get_image_for_draw(self):
+        return self.image
+
     def draw(self):
+        image = self.get_image_for_draw()
         angle = self.direction.angle_to(Vector2(1, 0))
-        rotated_image = pygame.transform.rotate(self.image, angle)
+        rotated_image = pygame.transform.rotate(image, angle)
         center = Vector2(rotated_image.get_rect().center)
-        #
         Drawable.screen.blit(rotated_image, (self.position - center).xy - self.offset + SCREEN_SIZE/2)
-        # print(self.image)
-        # Drawable.screen.blit(self.image, (self.position).xy)
 
     @classmethod
     def set_offset(cls, position):
