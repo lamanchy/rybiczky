@@ -1,3 +1,4 @@
+import math
 from math import pi
 from random import random
 import pygame
@@ -62,8 +63,22 @@ class Fish(Drawable):
             if fish.size > self.size:
                 distance = fish.position.distance_to(self.position)
                 if distance < 50:
-                    if
-                    return True
+                    # fish_angle = math.sin(abs(self.position.y - player_fish.position.y) / math.sqrt(abs(self.position.y - player_fish.position.y) ** 2 + abs(self.position.x - player_fish.position.x) ** 2))
+                    # angle_borders = [abs((angle_to(self.direction)+30)%90)],abs((angle_to(self.direction)-30)%90)]
+                    # if fish_angle >= angle_borders[1] and fish_angle <= angle_borders[0]:
+                    #     return True
+
+                    # fish_angle = pygame.math.Vector2.angle_to(self.position)
+                    # if (pygame.math.Vector2.angle_to(fish.position) + 30) <= fish_angle <= (pygame.math.Vector2.angle_to(fish.position) - 30):
+                        # return True
+
+                    angle = (self.position - fish.position).angle_to(self.direction)
+                    if abs(angle) <= 30:
+                        print(angle,distance)
+                        print("eaten")
+                        return True
+
+
 
     def move(self, ratio):
         if self.speed == 'normal':

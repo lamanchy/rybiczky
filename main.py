@@ -10,7 +10,7 @@ from src.fish import Fish
 from src.fishes.computer_fish import ComputerFish
 from src.fishes.player_fish import PlayerFish
 
-
+# tady jsou fajne radky na upravu dat rybizcek
 def main():
     for _ in range(50):
         ComputerFish(randint(50, 300))
@@ -66,16 +66,16 @@ def main():
 
 
         if ComputerFish.fishes:
-            textsurface = myfont.render(f'Remaining: {len(ComputerFish.fishes)}', False, (0, 0, 0))
-            screen.blit(textsurface, (0, 0))
+            text_surface = myfont.render(f'Remaining: {len(ComputerFish.fishes)}', False, (0, 0, 0))
+            screen.blit(text_surface, (0, 0))
         else:
             if end_time is None:
                 end_time = time()
-            textsurface = myfont.render(f'Time: {int(end_time - start_time)}s', False, (0, 0, 0))
-            screen.blit(textsurface, (400, 400))
+            text_surface = myfont.render(f'Time: {int(end_time - start_time)}s', False, (0, 0, 0))
+            screen.blit(text_surface, (400, 400))
 
-        textsurface = myfont.render(f'FPS: {int(1 / (duration + 0.0001))}', False, (0, 0, 0))
-        screen.blit(textsurface, (650, 0))
+        text_surface = myfont.render(f'FPS: {int(1 / (duration + 0.0001))}', False, (0, 0, 0))
+        screen.blit(text_surface, (650, 0))
 
         pygame.display.flip()
 

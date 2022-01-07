@@ -7,7 +7,7 @@
    id="svg8"
    inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
    sodipodi:docname="background.svg"
-   inkscape:export-filename="C:\Users\laman\PycharmProjects\rybiczky\images\background.png"
+   inkscape:export-filename="C:\Data\Usr\Martin\Projekty\rybiczky\images\background.png"
    inkscape:export-xdpi="85.300003"
    inkscape:export-ydpi="85.300003"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -26,9 +26,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.61572382"
-     inkscape:cx="588.73798"
-     inkscape:cy="379.22847"
+     inkscape:zoom="0.87076498"
+     inkscape:cx="123.45467"
+     inkscape:cy="-117.71259"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -108,9 +108,13 @@
        d="M 118.16603,141.56086 91.253855,108.34116 121.53005,50.101533 Z"
        id="path1428" />
     <path
-       style="fill:#c8f7ff;fill-opacity:0.863539;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m -60.823871,-57.006157 20.66191,26.131237 58.339507,-26.73894 z"
-       id="path1430" />
+       style="fill:#c8f7ff;fill-opacity:0.64999998;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m -92.722786,-65.615929 0.01899,23.539003 25.99368,-23.394712 z"
+       id="path1430"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="C:\Data\Usr\Martin\Projekty\rybiczky\images\background.png"
+       inkscape:export-xdpi="85.300003"
+       inkscape:export-ydpi="85.300003" />
     <path
        style="fill:#82a0ff;fill-opacity:0.863539;stroke:none;stroke-width:0.464546px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m -51.620254,90.659377 2.521918,3.667835 3.152397,-4.655332 z"
