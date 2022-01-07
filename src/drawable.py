@@ -11,6 +11,7 @@ class Drawable:
         self.position = position
         self.direction = direction
         self.image = image
+        self.mask = pygame.mask.from_surface(image)
         self.scale = scale
 
     def get_image_for_draw(self):

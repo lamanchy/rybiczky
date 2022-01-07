@@ -10,13 +10,11 @@ from src.fish import Fish
 from src.fishes.computer_fish import ComputerFish
 from src.fishes.player_fish import PlayerFish
 
+
 # tady jsou fajne radky na upravu dat rybizcek
 def main():
-    for _ in range(50):
-        ComputerFish(randint(50, 300))
-
-
     player_fish = PlayerFish()
+
     background = Drawable(Vector2(0, 0), Vector2(0, 1), pygame.image.load('images/background.png'))
 
     pygame.init()
@@ -31,9 +29,38 @@ def main():
     start_time = time()
     end_time = None
 
+    last_spawn_fish_time = time()
+
     while running:
         duration = time() - actual_time
         actual_time = time()
+
+        if time() - last_spawn_fish_time > 1:
+            last_spawn_fish_time = time()
+            categories = [
+                ([50, 100], 36),
+                ([100, 150], 25),
+                ([150, 200], 16),
+                ([200, 250], 9),
+                ([250, 300], 4),
+            ]
+            for range, number in categories:
+                fishes = [fish for fish in ComputerFish.computer_fishes if range[0] <= fish.size < range[1]]
+                if len(fishes) < number:
+                    r = max(*SCREEN_SIZE.xy) * 0.95
+                    position = Vector2(0, r)
+                    position = position.rotate(randint(0, 360))
+                    position = player_fish.position + position
+                    size = randint(*range)
+                    if size < player_fish.size - 30:
+                        image = pygame.image.load("images/smallest_fish.png")
+                    elif size < player_fish.size:
+                        image = pygame.image.load("images/medium_fish.png")
+                    elif size < player_fish.size + 30:
+                        image = pygame.image.load("images/big_fish.png")
+                    else:
+                        image = pygame.image.load("images/biggest_fishRed.png")
+                    ComputerFish(image, position, size)
 
         running = handle_events(player_fish, running)
 
@@ -47,9 +74,9 @@ def main():
             for y in [0, 1]:
                 pos = background_position + Vector2(x, y)
 
-                q = int((7*pos.x + 13*pos.y) % 4)
+                q = int((7 * pos.x + 13 * pos.y) % 4)
                 background.direction = [Vector2(0, 1), Vector2(1, 0), Vector2(0, -1), Vector2(-1, 0)][q]
-                background.position = pos*800 - Vector2(400)
+                background.position = pos * 800 - Vector2(400)
                 background.draw()
 
         for fish in Fish.fishes:
@@ -59,11 +86,9 @@ def main():
                     exit(0)
                 Fish.fishes.remove(fish)
 
-
         player_fish.draw()
         for fish in ComputerFish.fishes:
             fish.draw()
-
 
         if ComputerFish.fishes:
             text_surface = myfont.render(f'Remaining: {len(ComputerFish.fishes)}', False, (0, 0, 0))
@@ -73,6 +98,13 @@ def main():
                 end_time = time()
             text_surface = myfont.render(f'Time: {int(end_time - start_time)}s', False, (0, 0, 0))
             screen.blit(text_surface, (400, 400))
+
+        if player_fish.size > 300:
+            # print('succes')
+            if end_time is None:
+                end_time = time()
+            text_surface = myfont.render(f'YOU WON - time: {int(end_time - start_time)}s', False, (0, 0, 0))
+            screen.blit(text_surface, (350, 400))
 
         text_surface = myfont.render(f'FPS: {int(1 / (duration + 0.0001))}', False, (0, 0, 0))
         screen.blit(text_surface, (650, 0))
@@ -92,8 +124,6 @@ def move_fishes(duration, player_fish):
     for fish in ComputerFish.computer_fishes:
         fish.behave(player_fish)
         fish.move(ratio)
-
-
 
 
 def handle_events(player_fish, running):

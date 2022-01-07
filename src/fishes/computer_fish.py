@@ -21,15 +21,11 @@ class ComputerFish(Fish):
 
     computer_fishes = []
 
-    def __init__(self, size):
-        myimage = pygame.image.load("images/medium_fish.png")
-        position = Vector2(SCREEN_SIZE)
-        position.x *= random()
-        position.y *= random()
+    def __init__(self, image, position, size):
         self.switch_time = time()
         self.mode = 'attack'
         self.computer_fishes.append(self)
-        super().__init__(position, Vector2(1, 0), myimage, size)
+        super().__init__(position, Vector2(1, 0), image, size)
 
     def behave(self, player_fish):
         actual_time = time()
@@ -42,8 +38,7 @@ class ComputerFish(Fish):
                 self.switch_time = randint(15, 30) + time()
 
         if self.mode == 'calm':
-            if self.calm_behave():
-                return True
+            self.calm_behave()
 
         if self.mode == 'attack':
             self.attack_behave()
@@ -55,10 +50,10 @@ class ComputerFish(Fish):
 
         if distance > max(*SCREEN_SIZE.xy):
             vector = player_fish.position - self.position
-            self.position = self.position + 1.9 * vector
+            self.position += 1.9 * vector
 
     def attack_behave(self):
-
+        # TODO
         pass
 
     def calm_behave(self):
@@ -75,6 +70,7 @@ class ComputerFish(Fish):
         if random() < 0.01:
             self.reset_turing()
 
+        # TODO
         # for closest bigger fish
             # if distance < 300:
             #     player_fish_position = fish.position + 50 * fish.direction
