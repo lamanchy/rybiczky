@@ -64,10 +64,11 @@ class Fish(Drawable):
                 # if fish.mask.overlap(self.mask, (0, 0)):
                 #     return True
                 distance = fish.position.distance_to(self.position)
-                if distance < 50:
-                    angle = (self.position - fish.position).angle_to(self.direction)
-                    if abs(angle) <= 30:
+                if distance < fish.size/2:
+                    angle = (self.position - fish.position).angle_to(fish.direction)
+                    if abs(angle) <= 15:
                         fish.size = sqrt(fish.size ** 2 + 0.05 * self.size ** 2)
+                        # print(self.size)
                         return True
 
     def move(self, ratio):
