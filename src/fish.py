@@ -69,7 +69,7 @@ class Fish(Drawable):
                 #     return True
                 distance = fish.position.distance_to(self.position)
                 if distance < fish.size/2:
-                    angle = (self.position - fish.position).angle_to(self.direction)
+                    angle = (self.position - fish.position).angle_to(fish.direction)
                     if abs(angle) <= 15:
                         fish.size = (fish.size ** 3 + 0.5 * self.size ** 3)**(1/3)
                         return True
