@@ -6,13 +6,17 @@ from src.constants import SCREEN_SIZE
 
 class Drawable:
     screen = None
+    drawables = []
 
     def __init__(self, position: Vector2, direction: Vector2, image, scale=1):
         self.position = position
         self.direction = direction
         self.image = image
-        self.mask = pygame.mask.from_surface(image)
         self.scale = scale
+        self.drawables.append(self)
+
+    def delete(self):
+        self.drawables.remove(self)
 
     def get_image_for_draw(self):
         return self.image

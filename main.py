@@ -38,11 +38,11 @@ def main():
         if time() - last_spawn_fish_time > 1:
             last_spawn_fish_time = time()
             categories = [
-                ([50, 100], 36),
-                ([100, 150], 25),
-                ([150, 200], 16),
-                ([200, 250], 9),
-                ([250, 300], 4),
+                ([50, 100], 16),
+                ([100, 150], 9),
+                ([150, 200], 4),
+                ([200, 250], 2),
+                ([250, 300], 1),
             ]
             for range, number in categories:
                 fishes = [fish for fish in ComputerFish.computer_fishes if range[0] <= fish.size < range[1]]
@@ -84,10 +84,9 @@ def main():
                 if fish == player_fish:
                     print('you failed')
                     exit(0)
-                Fish.fishes.remove(fish)
+                fish.delete()
 
-        player_fish.draw()
-        for fish in ComputerFish.fishes:
+        for fish in Fish.fishes:
             fish.draw()
 
         if ComputerFish.fishes:
@@ -122,7 +121,8 @@ def move_fishes(duration, player_fish):
     player_fish.move(ratio)
 
     for fish in ComputerFish.computer_fishes:
-        fish.behave(player_fish)
+        fish.behave()
+        fish.reset_fish_position(player_fish)
         fish.move(ratio)
 
 

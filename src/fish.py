@@ -30,6 +30,10 @@ class Fish(Drawable):
         self.size = size
         self.fishes.append(self)
 
+    def delete(self):
+        super().delete()
+        self.fishes.remove(self)
+
     def get_image_for_draw(self):
         new_height = (self.size / self.image.get_width()) * self.image.get_height()
         return pygame.transform.scale(self.image, (self.size, new_height))
@@ -64,10 +68,10 @@ class Fish(Drawable):
                 # if fish.mask.overlap(self.mask, (0, 0)):
                 #     return True
                 distance = fish.position.distance_to(self.position)
-                if distance < 50:
+                if distance < fish.size/2:
                     angle = (self.position - fish.position).angle_to(self.direction)
-                    if abs(angle) <= 30:
-                        fish.size = sqrt(fish.size ** 2 + 0.05 * self.size ** 2)
+                    if abs(angle) <= 15:
+                        fish.size = (fish.size ** 3 + 0.5 * self.size ** 3)**(1/3)
                         return True
 
     def move(self, ratio):

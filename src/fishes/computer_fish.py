@@ -27,7 +27,11 @@ class ComputerFish(Fish):
         self.computer_fishes.append(self)
         super().__init__(position, Vector2(1, 0), image, size)
 
-    def behave(self, player_fish):
+    def delete(self):
+        super().delete()
+        self.computer_fishes.remove(self)
+
+    def behave(self):
         actual_time = time()
         if actual_time > self.switch_time:
             if self.mode == 'calm':
@@ -43,14 +47,15 @@ class ComputerFish(Fish):
         if self.mode == 'attack':
             self.attack_behave()
 
-        self.reset_fish_position(player_fish)
-
     def reset_fish_position(self, player_fish):
         distance = player_fish.position.distance_to(self.position)
 
         if distance > max(*SCREEN_SIZE.xy):
             vector = player_fish.position - self.position
             self.position += 1.9 * vector
+
+        if self.size > 300:
+            self.delete()
 
     def attack_behave(self):
         # TODO
