@@ -61,7 +61,6 @@ def main():
                     else:
                         image = pygame.image.load("images/biggest_fishRed.png")
                     ComputerFish(image, position, size)
-                    break
 
         running = handle_events(player_fish, running)
 
