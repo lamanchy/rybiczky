@@ -4,7 +4,7 @@ from time import time, sleep
 import pygame
 from pygame import Vector2
 
-from src.constants import SCREEN_SIZE
+from src.constants import RESET_DISTANCE
 from src.fish import Fish
 
 
@@ -21,11 +21,11 @@ class ComputerFish(Fish):
 
     computer_fishes = []
 
-    def __init__(self, image, position, size):
+    def __init__(self, position, size):
         self.switch_time = time()
         self.mode = 'attack'
         self.computer_fishes.append(self)
-        super().__init__(position, Vector2(1, 0), image, size)
+        super().__init__(position, Vector2(1, 0), None, size)
 
     def delete(self):
         super().delete()
@@ -50,9 +50,20 @@ class ComputerFish(Fish):
     def reset_fish_position(self, player_fish):
         distance = player_fish.position.distance_to(self.position)
 
-        if distance > max(*SCREEN_SIZE.xy):
+        if distance > RESET_DISTANCE:
             vector = player_fish.position - self.position
             self.position += 1.9 * vector
+
+            category = self.size % 120
+
+            if category <= 30:
+                self.image = pygame.image.load("images/big_fish.png")
+            elif category <= 60:
+                self.image = pygame.image.load("images/biggest_fishRed.png")
+            elif category <= 90:
+                self.image = pygame.image.load("images/smallest_fish.png")
+            else:
+                self.image = pygame.image.load("images/medium_fish.png")
 
         if self.size > 300:
             self.delete()

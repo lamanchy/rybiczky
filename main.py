@@ -4,7 +4,7 @@ from time import sleep, time
 import pygame
 from pygame import Vector2
 
-from src.constants import SCREEN_SIZE, FPS
+from src.constants import SCREEN_SIZE, FPS, RESET_DISTANCE
 from src.drawable import Drawable
 from src.fish import Fish
 from src.fishes.computer_fish import ComputerFish
@@ -47,20 +47,12 @@ def main():
             for range, number in categories:
                 fishes = [fish for fish in ComputerFish.computer_fishes if range[0] <= fish.size < range[1]]
                 if len(fishes) < number:
-                    r = max(*SCREEN_SIZE.xy) * 0.95
-                    position = Vector2(0, r)
+                    position = Vector2(0, RESET_DISTANCE*1.1)
                     position = position.rotate(randint(0, 360))
                     position = player_fish.position + position
                     size = randint(*range)
-                    if size < player_fish.size - 30:
-                        image = pygame.image.load("images/smallest_fish.png")
-                    elif size < player_fish.size:
-                        image = pygame.image.load("images/medium_fish.png")
-                    elif size < player_fish.size + 30:
-                        image = pygame.image.load("images/big_fish.png")
-                    else:
-                        image = pygame.image.load("images/biggest_fishRed.png")
-                    ComputerFish(image, position, size)
+
+                    ComputerFish(position, size)
 
         running = handle_events(player_fish, running)
 
