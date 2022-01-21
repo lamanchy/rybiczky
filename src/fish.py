@@ -17,7 +17,7 @@ class Fish(Drawable):
     maximum_speed = 5
     minimum_speed = 1
 
-    turning_speed = 0.01
+    turning_speed = 0.05
 
     fishes = []
 
