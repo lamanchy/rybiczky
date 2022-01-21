@@ -121,7 +121,7 @@ class ComputerFish(Fish):
             (fish.position.distance_to(self.position), fish)
             for fish in Fish.fishes if self.size < fish.size
         ]
-        fishes.sort()
+        fishes.sort(key=lambda t: t[0])
         for distance, fish in fishes:
             if distance < 100 or (fish.size <= self.size + 60 and distance < 300):
                 # run away

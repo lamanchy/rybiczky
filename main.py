@@ -39,10 +39,10 @@ def main():
             last_spawn_fish_time = time()
             categories = [
                 ([50, 100], 16),
-                # ([100, 150], 9),
-                # ([150, 200], 4),
-                # ([200, 250], 2),
-                # ([250, 300], 1),
+                ([100, 150], 9),
+                ([150, 200], 4),
+                ([200, 250], 2),
+                ([250, 300], 1),
             ]
             for range, number in categories:
                 fishes = [fish for fish in ComputerFish.computer_fishes if range[0] <= fish.size < range[1]]
