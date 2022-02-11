@@ -1,11 +1,13 @@
 import pygame
 from pygame import Vector2
 
-from src.constants import SCREEN_SIZE
-
 
 class Drawable:
-    screen = None
+    @classmethod
+    def set_screen(cls, screen):
+        cls.screen = screen
+        cls.screen_size = Vector2(pygame.display.get_surface().get_size())
+
     drawables = []
 
     def __init__(self, position: Vector2, direction: Vector2, image, scale=1):
@@ -26,7 +28,8 @@ class Drawable:
         angle = self.direction.angle_to(Vector2(1, 0))
         rotated_image = pygame.transform.rotate(image, angle)
         center = Vector2(rotated_image.get_rect().center)
-        Drawable.screen.blit(rotated_image, (self.position - center).xy - self.offset + SCREEN_SIZE/2)
+        position = (self.position - center).xy - self.offset + self.screen_size/2
+        Drawable.screen.blit(rotated_image, position)
 
     @classmethod
     def set_offset(cls, position):

@@ -4,7 +4,7 @@ from time import sleep, time
 import pygame
 from pygame import Vector2
 
-from src.constants import SCREEN_SIZE, FPS, RESET_DISTANCE
+from src.constants import FPS, RESET_DISTANCE, SCALE
 from src.drawable import Drawable
 from src.fish import Fish
 from src.fishes.computer_fish import ComputerFish
@@ -13,7 +13,6 @@ from src.fishes.player_fish import PlayerFish
 
 # tady jsou fajne radky na upravu dat rybizcek
 def main():
-    player_fish = PlayerFish()
 
     background = Drawable(Vector2(0, 0), Vector2(0, 1), pygame.image.load('images/background.png'))
 
@@ -21,8 +20,10 @@ def main():
     pygame.font.init()
     myfont = pygame.font.SysFont('Comic Sans ', 30)
 
-    screen = pygame.display.set_mode(SCREEN_SIZE)
-    Drawable.screen = screen
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    Drawable.set_screen(screen)
+
+    player_fish = PlayerFish()
 
     running = True
     actual_time = time()
@@ -62,13 +63,13 @@ def main():
         Drawable.set_offset(player_fish.position)
 
         background_position = Vector2(round(player_fish.position.x / 800), round(player_fish.position.y / 800))
-        for x in [0, 1]:
-            for y in [0, 1]:
+        for x in [0, 1, 2]:
+            for y in [0, 1, 2]:
                 pos = background_position + Vector2(x, y)
 
                 q = int((7 * pos.x + 13 * pos.y) % 4)
                 background.direction = [Vector2(0, 1), Vector2(1, 0), Vector2(0, -1), Vector2(-1, 0)][q]
-                background.position = pos * 800 - Vector2(400)
+                background.position = pos * 800 - Vector2(800)
                 background.draw()
 
         for fish in Fish.fishes:
@@ -82,7 +83,7 @@ def main():
             fish.draw()
 
         if ComputerFish.fishes:
-            text_surface = myfont.render(f'Remaining: {len(ComputerFish.fishes)}', False, (0, 0, 0))
+            text_surface = myfont.render(f'Score: {player_fish.size - PlayerFish.starting_size * SCALE}', False, (0, 0, 0))
             screen.blit(text_surface, (0, 0))
         else:
             if end_time is None:
@@ -90,7 +91,7 @@ def main():
             text_surface = myfont.render(f'Time: {int(end_time - start_time)}s', False, (0, 0, 0))
             screen.blit(text_surface, (400, 400))
 
-        if player_fish.size > 300:
+        if player_fish.size > Fish.max_size:
             # print('succes')
             if end_time is None:
                 end_time = time()

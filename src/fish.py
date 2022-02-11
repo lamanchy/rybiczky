@@ -1,33 +1,51 @@
 from math import pi
-from math import sqrt
 
 import pygame
-
 from pygame import Vector2
 
+from src.constants import SCALE
 from src.drawable import Drawable
 
 
 class Fish(Drawable):
-    acceleration_force = 0.01
-    deceleration_force = 0.01
-    inertia_force = 0.01
+    min_size = 50 * SCALE
+    max_size = 300 * SCALE
 
-    normal_speed = 2
-    maximum_speed = 5
-    minimum_speed = 1
+    def get_value_based_on_size(self, start, end):
+        result = (end - start) * (self.size - self.min_size) / (self.max_size - self.min_size) + start
+        return result * SCALE
 
-    turning_speed = 0.05
+    @property
+    def acceleration_force(self):
+        return self.get_value_based_on_size(0.02, 0.005)
+    @property
+    def deceleration_force(self):
+        return self.get_value_based_on_size(0.04, 0.01)
+    @property
+    def inertia_force(self):
+        return self.get_value_based_on_size(0.05, 0.01)
+    @property
+    def normal_speed(self):
+        return self.get_value_based_on_size(3, 10)
+    @property
+    def maximum_speed(self):
+        return self.get_value_based_on_size(5, 15)
+    @property
+    def minimum_speed(self):
+        return self.get_value_based_on_size(0.1, 5)
+    @property
+    def turning_speed(self):
+        return self.get_value_based_on_size(0.1, 0.025)
 
     fishes = []
 
     def __init__(self, position: Vector2, direction: Vector2, image, size):
         super().__init__(position, direction, image)
         self.turning = 0
+        self.size = size * SCALE
         self.actual_speed = self.normal_speed
         self.acceleration = 0
         self.speed = 'normal'
-        self.size = size
         self.fishes.append(self)
 
     def delete(self):
@@ -68,10 +86,10 @@ class Fish(Drawable):
                 # if fish.mask.overlap(self.mask, (0, 0)):
                 #     return True
                 distance = fish.position.distance_to(self.position)
-                if distance < fish.size/2:
+                if distance < fish.size / 2:
                     angle = (self.position - fish.position).angle_to(fish.direction)
                     if abs(angle) <= 15:
-                        fish.size = (fish.size ** 3 + 0.5 * self.size ** 3)**(1/3)
+                        fish.size = (fish.size ** 3 + 0.25 * self.size ** 3) ** (1 / 3)
                         return True
 
     def move(self, ratio):

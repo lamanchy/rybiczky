@@ -9,16 +9,6 @@ from src.fish import Fish
 
 
 class ComputerFish(Fish):
-    acceleration_force = 0.1
-    deceleration_force = 0.05
-    inertia_force = 0.1
-
-    normal_speed = 2
-    maximum_speed = 8
-    minimum_speed = 1.5
-
-    turning_speed = 0.04
-
     computer_fishes = []
 
     def __init__(self, position, size):
@@ -70,8 +60,8 @@ class ComputerFish(Fish):
             else:
                 self.image = pygame.image.load("images/medium_fish.png")
 
-        if self.size > 300:
-            self.delete()
+            if self.size > self.max_size:
+                self.delete()
 
     def attack_behave(self):
         if self.target is None:
