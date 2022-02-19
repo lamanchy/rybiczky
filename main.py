@@ -1,6 +1,8 @@
 from random import randint
 from time import sleep, time
 
+# import keyboard
+
 import pygame
 from pygame import Vector2
 
@@ -18,7 +20,7 @@ def main():
 
     pygame.init()
     pygame.font.init()
-    myfont = pygame.font.SysFont('Comic Sans ', 30)
+    myfont = pygame.font.SysFont('Consolas ', 30)
 
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     Drawable.set_screen(screen)
@@ -30,11 +32,15 @@ def main():
     start_time = time()
     end_time = None
 
+    failed = False
+
     last_spawn_fish_time = time()
 
     while running:
         duration = time() - actual_time
         actual_time = time()
+
+        key_pressed = pygame.key.get_pressed()
 
         if time() - last_spawn_fish_time > 1:
             last_spawn_fish_time = time()
@@ -76,8 +82,11 @@ def main():
             if fish.compute_collisions():
                 if fish == player_fish:
                     print('you failed')
-                    exit(0)
-                fish.delete()
+                    failed = True
+                    # player_fish.size = player_fish.starting_size
+                    # exit(0)
+                else:
+                    fish.delete()
 
         for fish in Fish.fishes:
             fish.draw()
@@ -90,6 +99,17 @@ def main():
                 end_time = time()
             text_surface = myfont.render(f'Time: {int(end_time - start_time)}s', False, (0, 0, 0))
             screen.blit(text_surface, (400, 400))
+
+        if failed:
+            text_surface = myfont.render(f'You\'ve got eaten. Press r to restart or e to exit the game', False, (0, 0, 0))
+            screen.blit(text_surface, (400, 400))
+
+            if key_pressed[pygame.K_r]:
+                failed = False
+                player_fish.size = player_fish.starting_size*SCALE
+
+            if key_pressed[pygame.K_e]:
+                exit(0)
 
         if player_fish.size > Fish.max_size:
             # print('succes')
