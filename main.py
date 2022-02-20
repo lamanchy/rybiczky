@@ -101,15 +101,13 @@ def main():
             screen.blit(text_surface, (400, 400))
 
         if failed:
-            text_surface = myfont.render(f'You\'ve got eaten. Press r to restart or e to exit the game', False, (0, 0, 0))
-            screen.blit(text_surface, (400, 400))
+            text_surface = myfont.render(f'You\'ve got eaten. Press r to restart', False, (0, 0, 0))
+            screen.blit(text_surface, (screen.get_width()/2, screen.get_height()/2))
 
             if key_pressed[pygame.K_r]:
                 failed = False
                 player_fish.size = player_fish.starting_size*SCALE
 
-            if key_pressed[pygame.K_e]:
-                exit(0)
 
         if player_fish.size > Fish.max_size:
             # print('succes')
@@ -155,6 +153,8 @@ def handle_events(player_fish, running):
         player_fish.turn_left()
     elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
         player_fish.turn_right()
+    elif keys[pygame.K_ESCAPE]:
+        exit(0)
     else:
         player_fish.reset_turing()
 
