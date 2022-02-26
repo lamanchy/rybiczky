@@ -52,13 +52,13 @@ class ComputerFish(Fish):
             category = self.size % 120
 
             if category <= 30:
-                self.image = pygame.image.load("images/big_fish.png")
+                self.image = pygame.image.load("images/big_fish.png").convert_alpha()
             elif category <= 60:
-                self.image = pygame.image.load("images/biggest_fishRed.png")
+                self.image = pygame.image.load("images/biggest_fishRed.png").convert_alpha()
             elif category <= 90:
-                self.image = pygame.image.load("images/smallest_fish.png")
+                self.image = pygame.image.load("images/smallest_fish.png").convert_alpha()
             else:
-                self.image = pygame.image.load("images/medium_fish.png")
+                self.image = pygame.image.load("images/medium_fish.png").convert_alpha()
 
             if self.size > self.max_size:
                 self.delete()

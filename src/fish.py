@@ -13,7 +13,7 @@ class Fish(Drawable):
 
     def get_value_based_on_size(self, start, end):
         result = (end - start) * (self.size - self.min_size) / (self.max_size - self.min_size) + start
-        return result * SCALE
+        return result * SCALE * self.handicap
 
     @property
     def acceleration_force(self):
@@ -39,8 +39,9 @@ class Fish(Drawable):
 
     fishes = []
 
-    def __init__(self, position: Vector2, direction: Vector2, image, size):
+    def __init__(self, position: Vector2, direction: Vector2, image, size, handicap=1):
         super().__init__(position, direction, image)
+        self.handicap = handicap
         self.turning = 0
         self.size = size * SCALE
         self.actual_speed = self.normal_speed
@@ -89,8 +90,14 @@ class Fish(Drawable):
                 if distance < fish.size / 2:
                     angle = (self.position - fish.position).angle_to(fish.direction)
                     if abs(angle) <= 15:
-                        fish.size = (fish.size ** 3 + 0.25 * self.size ** 3) ** (1 / 3)
+                        self.transfer_health_to(fish)
                         return True
+
+    def transfer_health_to(self, other):
+        difference = (other.size ** 3 + 0.25 * self.size ** 3) ** (1 / 3) - other.size
+        other.size += difference
+        self.size -= difference
+
 
     def move(self, ratio):
         if self.speed == 'normal':

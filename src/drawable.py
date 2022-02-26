@@ -1,8 +1,11 @@
 import pygame
-from pygame import Vector2
+from pygame import Vector2, mask
 
 
 class Drawable:
+    screen = None
+    screen_size = None
+
     @classmethod
     def set_screen(cls, screen):
         cls.screen = screen
@@ -34,4 +37,3 @@ class Drawable:
     @classmethod
     def set_offset(cls, position):
         cls.offset = position
-

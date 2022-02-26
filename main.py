@@ -1,44 +1,45 @@
 from random import randint
 from time import sleep, time
 
-# import keyboard
 
 import pygame
 from pygame import Vector2
 
-from src.constants import FPS, RESET_DISTANCE, SCALE
+from src.constants import FPS, RESET_DISTANCE, SCALE, FULLSCREEN, DEBUG
 from src.drawable import Drawable
 from src.fish import Fish
 from src.fishes.computer_fish import ComputerFish
 from src.fishes.player_fish import PlayerFish
 
+from src.text import render_text
 
-# tady jsou fajne radky na upravu dat rybizcek
+
 def main():
-
-    background = Drawable(Vector2(0, 0), Vector2(0, 1), pygame.image.load('images/background.png'))
 
     pygame.init()
     pygame.font.init()
     myfont = pygame.font.SysFont('Consolas ', 30)
 
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    if FULLSCREEN:
+        screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    else:
+        screen = pygame.display.set_mode((800, 800))
     Drawable.set_screen(screen)
 
     player_fish = PlayerFish()
+    background = Drawable(Vector2(0, 0), Vector2(0, 1), pygame.image.load('images/background.png').convert())
 
     running = True
-    actual_time = time()
     start_time = time()
     end_time = None
 
     failed = False
 
     last_spawn_fish_time = time()
+    clock = pygame.time.Clock()
 
     while running:
-        duration = time() - actual_time
-        actual_time = time()
+        duration = clock.tick(FPS) / 1000
 
         key_pressed = pygame.key.get_pressed()
 
@@ -52,13 +53,12 @@ def main():
                 ([250, 300], 1),
             ]
             for range, number in categories:
-                fishes = [fish for fish in ComputerFish.computer_fishes if range[0] <= fish.size < range[1]]
+                fishes = [fish for fish in ComputerFish.computer_fishes if range[0]*SCALE <= fish.size < range[1]*SCALE]
                 if len(fishes) < number:
-                    position = Vector2(0, RESET_DISTANCE*1.1)
+                    position = Vector2(0, RESET_DISTANCE * 1.1)
                     position = position.rotate(randint(0, 360))
                     position = player_fish.position + position
                     size = randint(*range)
-
                     ComputerFish(position, size)
 
         running = handle_events(player_fish, running)
@@ -79,56 +79,50 @@ def main():
                 background.draw()
 
         for fish in Fish.fishes:
-            if fish.compute_collisions():
+            if fish.compute_collisions() and fish.size < 50 *  SCALE:
                 if fish == player_fish:
                     print('you failed')
                     failed = True
                     # player_fish.size = player_fish.starting_size
                     # exit(0)
-                else:
-                    fish.delete()
+                fish.delete()
 
         for fish in Fish.fishes:
             fish.draw()
 
-        if ComputerFish.fishes:
-            text_surface = myfont.render(f'Score: {player_fish.size - PlayerFish.starting_size * SCALE}', False, (0, 0, 0))
-            screen.blit(text_surface, (0, 0))
-        else:
-            if end_time is None:
-                end_time = time()
-            text_surface = myfont.render(f'Time: {int(end_time - start_time)}s', False, (0, 0, 0))
-            screen.blit(text_surface, (400, 400))
+        if key_pressed[pygame.K_f] and DEBUG:
+            failed = True
 
         if failed:
-            text_surface = myfont.render(f'You\'ve got eaten. Press r to restart', False, (0, 0, 0))
-            screen.blit(text_surface, (screen.get_width()/2, screen.get_height()/2))
-
+            render_text([
+                'You\'ve got eaten.',
+                'Press r to restart'
+            ], 'middle', myfont)
             if key_pressed[pygame.K_r]:
                 failed = False
-                player_fish.size = player_fish.starting_size*SCALE
 
+                while ComputerFish.computer_fishes:
+                    ComputerFish.computer_fishes[0].delete()
+                player_fish = PlayerFish()
 
         if player_fish.size > Fish.max_size:
             # print('succes')
             if end_time is None:
                 end_time = time()
-            text_surface = myfont.render(f'YOU WON - time: {int(end_time - start_time)}s', False, (0, 0, 0))
-            screen.blit(text_surface, (350, 400))
+            render_text(f'YOU WON - time: {int(end_time - start_time)}s', 'middle', myfont)
 
-        text_surface = myfont.render(f'FPS: {int(1 / (duration + 0.0001))}', False, (0, 0, 0))
-        screen.blit(text_surface, (650, 0))
+        render_text([
+            f'FPS: {int(1 / (duration + 0.0001))}',
+            f'Score: {player_fish.size - PlayerFish.starting_size * SCALE}'
+        ], 'left', myfont, Vector2(0, 0))
 
         pygame.display.flip()
-
-        if duration < 1 / FPS:
-            sleep(1 / FPS - duration)
 
     pygame.quit()
 
 
 def move_fishes(duration, player_fish):
-    ratio = duration / (1 / FPS)
+    ratio = duration / (1 / 30)
     player_fish.move(ratio)
 
     for fish in ComputerFish.computer_fishes:
