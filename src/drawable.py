@@ -26,13 +26,20 @@ class Drawable:
     def get_image_for_draw(self):
         return self.image
 
-    def draw(self):
+    def get_rotated_image(self):
         image = self.get_image_for_draw()
         angle = self.direction.angle_to(Vector2(1, 0))
-        rotated_image = pygame.transform.rotate(image, angle)
+        return pygame.transform.rotate(image, angle)
+
+    def draw(self):
+        rotated_image = self.get_rotated_image()
         center = Vector2(rotated_image.get_rect().center)
         position = (self.position - center).xy - self.offset + self.screen_size/2
         Drawable.screen.blit(rotated_image, position)
+
+    def get_mask(self):
+        rotated_image = self.get_rotated_image()
+        return pygame.mask.from_surface(rotated_image)
 
     @classmethod
     def set_offset(cls, position):

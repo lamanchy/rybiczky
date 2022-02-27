@@ -87,9 +87,11 @@ class Fish(Drawable):
                 # if fish.mask.overlap(self.mask, (0, 0)):
                 #     return True
                 distance = fish.position.distance_to(self.position)
-                if distance < fish.size / 2:
-                    angle = (self.position - fish.position).angle_to(fish.direction)
-                    if abs(angle) <= 15:
+                # if distance is more than size of bigger fish, there wont be ever collision
+                if distance < fish.size:
+                    fish_mask = pygame.mask.Mask((1, 1), fill=True)
+                    self_mask = self.get_mask()
+                    if fish_mask.overlap(self_mask, (self.position - Vector2(self_mask.get_size())/2) - (fish.position + fish.direction*fish.size/2)) is not None:
                         self.transfer_health_to(fish)
                         return True
 
