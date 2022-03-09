@@ -10,21 +10,12 @@ from src.drawable import Drawable
 from src.fish import Fish
 from src.fishes.computer_fish import ComputerFish
 from src.fishes.player_fish import PlayerFish
+from src.game import Game
 
 from src.text import render_text
 
 
 def main():
-
-    pygame.init()
-    pygame.font.init()
-    myfont = pygame.font.SysFont('Consolas ', 30)
-
-    if FULLSCREEN:
-        screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-    else:
-        screen = pygame.display.set_mode((800, 800))
-    Drawable.set_screen(screen)
 
     player_fish = PlayerFish()
     background = Drawable(Vector2(0, 0), Vector2(0, 1), pygame.image.load('images/background.png').convert())
@@ -35,38 +26,38 @@ def main():
 
     failed = False
 
-    last_spawn_fish_time = time()
+    # last_spawn_fish_time = time()
     clock = pygame.time.Clock()
 
     while running:
-        duration = clock.tick(FPS) / 1000
+        # duration = clock.tick(FPS) / 1000
 
         key_pressed = pygame.key.get_pressed()
 
-        if time() - last_spawn_fish_time > 1:
-            last_spawn_fish_time = time()
-            categories = [
-                ([50, 100], 16),
-                ([100, 150], 9),
-                ([150, 200], 4),
-                ([200, 250], 2),
-                ([250, 300], 1),
-            ]
-            for range, number in categories:
-                fishes = [fish for fish in ComputerFish.computer_fishes if range[0]*SCALE <= fish.size < range[1]*SCALE]
-                if len(fishes) < number:
-                    position = Vector2(0, RESET_DISTANCE * 1.1)
-                    position = position.rotate(randint(0, 360))
-                    position = player_fish.position + position
-                    size = randint(*range)
-                    ComputerFish(position, size)
-
-        running = handle_events(player_fish, running)
-
-        move_fishes(duration, player_fish)
-
-        screen.fill((255, 255, 255))
-        Drawable.set_offset(player_fish.position)
+        # if time() - last_spawn_fish_time > 1:
+        #     last_spawn_fish_time = time()
+        #     categories = [
+        #         ([50, 100], 16),
+        #         ([100, 150], 9),
+        #         ([150, 200], 4),
+        #         ([200, 250], 2),
+        #         ([250, 300], 1),
+        #     ]
+        #     for range, number in categories:
+        #         fishes = [fish for fish in ComputerFish.computer_fishes if range[0]*SCALE <= fish.size < range[1]*SCALE]
+        #         if len(fishes) < number:
+        #             position = Vector2(0, RESET_DISTANCE * 1.1)
+        #             position = position.rotate(randint(0, 360))
+        #             position = player_fish.position + position
+        #             size = randint(*range)
+        #             ComputerFish(position, size)
+        #
+        # running = handle_events(player_fish, running)
+        #
+        # move_fishes(duration, player_fish)
+        #
+        # screen.fill((255, 255, 255))
+        # Drawable.set_offset(player_fish.position)
 
         background_position = Vector2(round(player_fish.position.x / 800), round(player_fish.position.y / 800))
         for x in [0, 1, 2]:
@@ -121,39 +112,40 @@ def main():
     pygame.quit()
 
 
-def move_fishes(duration, player_fish):
-    ratio = duration / (1 / 30)
-    player_fish.move(ratio)
+# def move_fishes(duration, player_fish):
+#     ratio = duration / (1 / 30)
+#     player_fish.move(ratio)
+#
+#     for fish in ComputerFish.computer_fishes:
+#         fish.behave()
+#         fish.reset_fish_position(player_fish)
+#         fish.move(ratio)
 
-    for fish in ComputerFish.computer_fishes:
-        fish.behave()
-        fish.reset_fish_position(player_fish)
-        fish.move(ratio)
 
-
-def handle_events(player_fish, running):
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_w] or keys[pygame.K_UP]:
-        player_fish.accelerate()
-    elif keys[pygame.K_s] or keys[pygame.K_DOWN]:
-        player_fish.slow_down()
-    else:
-        player_fish.reset_speed()
-    if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-        player_fish.turn_left()
-    elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-        player_fish.turn_right()
-    elif keys[pygame.K_ESCAPE]:
-        exit(0)
-    else:
-        player_fish.reset_turing()
-
-    return running
+# def handle_events(player_fish, running):
+#     for event in pygame.event.get():
+#         if event.type == pygame.QUIT:
+#             running = False
+#
+#     keys = pygame.key.get_pressed()
+#     if keys[pygame.K_w] or keys[pygame.K_UP]:
+#         player_fish.accelerate()
+#     elif keys[pygame.K_s] or keys[pygame.K_DOWN]:
+#         player_fish.slow_down()
+#     else:
+#         player_fish.reset_speed()
+#     if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+#         player_fish.turn_left()
+#     elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+#         player_fish.turn_right()
+#     elif keys[pygame.K_ESCAPE]:
+#         exit(0)
+#     else:
+#         player_fish.reset_turing()
+#
+#     return running
 
 
 if __name__ == "__main__":
-    main()
+    game = Game()
+    game.run()
