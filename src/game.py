@@ -1,14 +1,16 @@
+from random import randint
+from time import time
+
 import pygame
 from pygame import Vector2
-from time import time
-from random import randint
 
 from src.constants import FULLSCREEN, FPS, SCALE, RESET_DISTANCE, DEBUG
 from src.drawable import Drawable
-from src.text import render_text
-from src.fishes.player_fish import PlayerFish
-from src.fishes.computer_fish import ComputerFish
 from src.fish import Fish
+from src.fishes.computer_fish import ComputerFish
+from src.fishes.player_fish import PlayerFish
+from src.text import render_text
+
 
 # The names of modes:
 # main_menu
@@ -39,7 +41,6 @@ class Game():
         self.player_fish = PlayerFish()
         self.background = Drawable(Vector2(0, 0), Vector2(0, 1), pygame.image.load('images/background.png').convert())
 
-
     def loop(self):
         keys = pygame.key.get_pressed()
         Drawable.screen.fill((255, 255, 255))
@@ -52,32 +53,31 @@ class Game():
         if keys[pygame.K_SPACE]:
             self.mode = 'pause'
 
+        self.game()
         if self.mode == 'main_menu':
             self.main_menu()
         if self.mode == 'leaderboard':
             self.leaderboard()
         if self.mode == 'game':
-            self.game()
+            pass
         if self.mode == 'restart':
             self.restart()
         if self.mode == 'won':
-            self.game()
+
             self.won()
         if self.mode == 'pause':
             self.pause()
-
 
         if keys[pygame.K_f] and DEBUG:
             self.mode = 'restart'
         if keys[pygame.K_g] and DEBUG:
             self.mode = 'won'
 
-
         pygame.display.flip()
 
     def main_menu(self):
         keys = pygame.key.get_pressed()
-        # self.draw_background()
+        self.draw_background(Vector2(0, 0))
         render_text(['RYBICZKY', 'press p to play'], 'middle', self.font)
         if keys[pygame.K_p]:
             self.mode = 'game'
@@ -99,7 +99,8 @@ class Game():
                 ([250, 300], 1),
             ]
             for range, number in categories:
-                fishes = [fish for fish in ComputerFish.computer_fishes if range[0]*SCALE <= fish.size < range[1]*SCALE]
+                fishes = [fish for fish in ComputerFish.computer_fishes if
+                          range[0] * SCALE <= fish.size < range[1] * SCALE]
                 if len(fishes) < number:
                     position = Vector2(0, RESET_DISTANCE * 1.1)
                     position = position.rotate(randint(0, 360))
@@ -112,9 +113,7 @@ class Game():
         self.move_fishes(self.duration, self.player_fish)
 
         Drawable.screen.fill((255, 255, 255))
-        Drawable.set_offset(self.player_fish.position)
-
-        self.draw_background_player()
+        self.draw_background(self.player_fish.position)
 
         for fish in Fish.fishes:
             if fish.compute_collisions() and fish.size < 50 * SCALE:
@@ -152,6 +151,7 @@ class Game():
             self.player_fish = PlayerFish()
 
     def pause(self):
+        self.draw_background(self.player_fish.position)
         if self.pause_time is None:
             self.pause_time = time()
         render_text(['Game is stopped', 'press p to play'], 'middle', self.font)
@@ -192,20 +192,11 @@ class Game():
             fish.reset_fish_position(player_fish)
             fish.move(ratio)
 
-    def draw_background_player(self):
-        background_position = Vector2(round(self.player_fish.position.x / 800), round(self.player_fish.position.y / 800))
-        for x in [0, 1, 2]:
-            for y in [0, 1, 2]:
-                pos = background_position + Vector2(x, y)
+    def draw_background(self, player_fish_position):
+        Drawable.set_offset(player_fish_position)
+        background_position = Vector2(round(self.player_fish.position.x / 800),
+                                      round(self.player_fish.position.y / 800))
 
-                q = int((7 * pos.x + 13 * pos.y) % 4)
-                self.background.direction = [Vector2(0, 1), Vector2(1, 0), Vector2(0, -1), Vector2(-1, 0)][q]
-                self.background.position = pos * 800 - Vector2(800)
-                self.background.draw()
-
-    # TODO working only for player, need to be modified, but mistake is on drawable side
-    def draw_background(self):
-        background_position = Vector2(800, 800)
         for x in [0, 1, 2]:
             for y in [0, 1, 2]:
                 pos = background_position + Vector2(x, y)
