@@ -147,8 +147,8 @@ class Game():
         ], 'middle', self.font)
         if keys[pygame.K_r]:
             self.mode = 'game'
-            while ComputerFish.computer_fishes:
-                ComputerFish.computer_fishes[0].delete()
+            while Fish.fishes:
+                Fish.fishes[0].delete()
             self.player_fish = PlayerFish()
 
     def pause(self):
