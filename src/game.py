@@ -64,6 +64,7 @@ class Game():
             self.restart()
         if self.mode == 'won':
 
+
             self.won()
         if self.mode == 'pause':
             self.pause()
