@@ -1,12 +1,13 @@
 import json
 from os.path import exists
+from os.path import join
 from random import randint
 from time import time
 
 import pygame
 from pygame import Vector2
 
-from src.constants import FULLSCREEN, FPS, SCALE, RESET_DISTANCE, DEBUG
+from src.constants import FULLSCREEN, FPS, SCALE, RESET_DISTANCE, DEBUG, BASE_PATH
 from src.drawable import Drawable
 from src.fish import Fish
 from src.fishes.computer_fish import ComputerFish
@@ -46,7 +47,7 @@ class Game():
         self.running = True
         self.last_spawn_fish_time = time()
         self.player_fish = None
-        self.background = Drawable(Vector2(0, 0), Vector2(0, 1), pygame.image.load('images/background.png').convert())
+        self.background = Drawable(Vector2(0, 0), Vector2(0, 1), pygame.image.load(join(BASE_PATH, 'images', 'background.png')).convert())
         self.keys = None
         self.handicap = None
 

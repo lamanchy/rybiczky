@@ -1,10 +1,11 @@
+from os.path import join
 from random import random, randint
 from time import time, sleep
 
 import pygame
 from pygame import Vector2
 
-from src.constants import RESET_DISTANCE, SCALE
+from src.constants import RESET_DISTANCE, SCALE, BASE_PATH
 from src.fish import Fish
 
 
@@ -56,15 +57,15 @@ class ComputerFish(Fish):
             category = self.size % 300*SCALE
     #TODO puvodne bylo po 30 a %120 - predelat tak aby to nebylo podle modulo deleni ale podle velikosti fixne * ratio
             if category <= 50*SCALE:
-                self.image = pygame.image.load("images/color_range_fish/more_smallest_fish.png").convert_alpha()
+                self.image = pygame.image.load(join(BASE_PATH, 'images', 'color_range_fish/more_smallest_fish.png')).convert_alpha()
             elif category <= 100*SCALE:
-                self.image = pygame.image.load("images/smallest_fish.png").convert_alpha()
+                self.image = pygame.image.load(join(BASE_PATH, 'images', 'smallest_fish.png')).convert_alpha()
             elif category <= 150*SCALE:
-                self.image = pygame.image.load("images/medium_fish.png").convert_alpha()
+                self.image = pygame.image.load(join(BASE_PATH, 'images', 'medium_fish.png')).convert_alpha()
             elif category <= 200*SCALE:
-                self.image = pygame.image.load("images/big_fish.png").convert_alpha()
+                self.image = pygame.image.load(join(BASE_PATH, 'images', 'big_fish.png')).convert_alpha()
             else:
-                self.image = pygame.image.load("images/biggest_fishRed.png").convert_alpha()
+                self.image = pygame.image.load(join(BASE_PATH, 'images', 'biggest_fishRed.png')).convert_alpha()
 
             if self.size > self.max_size:
                 self.delete()
