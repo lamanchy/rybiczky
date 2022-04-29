@@ -4,7 +4,7 @@ from time import time, sleep
 import pygame
 from pygame import Vector2
 
-from src.constants import RESET_DISTANCE
+from src.constants import RESET_DISTANCE, SCALE
 from src.fish import Fish
 
 
@@ -43,22 +43,28 @@ class ComputerFish(Fish):
             self.attack_behave()
 
     def reset_fish_position(self, player_fish):
-        distance = player_fish.position.distance_to(self.position)
+        relative_position = Vector2(0, 0)
+        if player_fish is not None:
+            relative_position = player_fish.position
+
+        distance = relative_position.distance_to(self.position)
 
         if distance > RESET_DISTANCE:
-            vector = player_fish.position - self.position
+            vector = relative_position - self.position
             self.position += 1.9 * vector
 
-            category = self.size % 120
-
-            if category <= 30:
-                self.image = pygame.image.load("images/big_fish.png").convert_alpha()
-            elif category <= 60:
-                self.image = pygame.image.load("images/biggest_fishRed.png").convert_alpha()
-            elif category <= 90:
+            category = self.size % 300*SCALE
+    #TODO puvodne bylo po 30 a %120 - predelat tak aby to nebylo podle modulo deleni ale podle velikosti fixne * ratio
+            if category <= 50*SCALE:
+                self.image = pygame.image.load("images/color_range_fish/more_smallest_fish.png").convert_alpha()
+            elif category <= 100*SCALE:
                 self.image = pygame.image.load("images/smallest_fish.png").convert_alpha()
-            else:
+            elif category <= 150*SCALE:
                 self.image = pygame.image.load("images/medium_fish.png").convert_alpha()
+            elif category <= 200*SCALE:
+                self.image = pygame.image.load("images/big_fish.png").convert_alpha()
+            else:
+                self.image = pygame.image.load("images/biggest_fishRed.png").convert_alpha()
 
             if self.size > self.max_size:
                 self.delete()

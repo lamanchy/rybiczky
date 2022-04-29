@@ -100,7 +100,6 @@ class Fish(Drawable):
         other.size += difference
         self.size -= difference
 
-
     def move(self, ratio):
         if self.speed == 'normal':
             if self.actual_speed <= self.normal_speed:
@@ -126,5 +125,8 @@ class Fish(Drawable):
 
         # determine speed change based on self.acceleration
         self.actual_speed += self.acceleration * ratio
+        if self.actual_speed < self.minimum_speed:
+            self.actual_speed = self.minimum_speed
         self.swim(ratio * self.actual_speed)
         self.turn(self.turning_speed * self.turning)
+
