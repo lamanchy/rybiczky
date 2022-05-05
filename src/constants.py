@@ -16,5 +16,5 @@ if getattr(sys, 'frozen', False):
 
 else:
     BASE_PATH = dirname(dirname(abspath(__file__)))
-    FULLSCREEN = False
+    FULLSCREEN = True
     DEBUG = True

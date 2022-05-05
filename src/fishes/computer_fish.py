@@ -57,7 +57,7 @@ class ComputerFish(Fish):
             category = self.size % 300*SCALE
     #TODO puvodne bylo po 30 a %120 - predelat tak aby to nebylo podle modulo deleni ale podle velikosti fixne * ratio
             if category <= 50*SCALE:
-                self.image = pygame.image.load(join(BASE_PATH, 'images', 'color_range_fish/more_smallest_fish.png')).convert_alpha()
+                self.image = pygame.image.load(join(BASE_PATH, 'images', 'more_smallest_fish.png')).convert_alpha()
             elif category <= 100*SCALE:
                 self.image = pygame.image.load(join(BASE_PATH, 'images', 'smallest_fish.png')).convert_alpha()
             elif category <= 150*SCALE:

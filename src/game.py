@@ -181,10 +181,12 @@ class Game():
         for fish in Fish.fishes:
             fish.draw()
 
+        if self.player_fish is not None and self.player_fish.size > Fish.max_size and self.mode == 'game':
+            self.mark_win()
+
         self.print_stats(self.mode == 'game')
 
-        if self.player_fish is not None and self.player_fish.size > Fish.max_size:
-            self.mark_win()
+
 
     def won(self):
         render_text(f'YOU WON - time: {int(self.end_time - self.start_time)}s', 'middle', self.font)
@@ -282,6 +284,7 @@ class Game():
         pygame.quit()
 
     def mark_win(self):
+        print('mark_win')
         self.mode = 'won'
         if self.end_time is None:
             self.end_time = time()
