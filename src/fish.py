@@ -53,9 +53,13 @@ class Fish(Drawable):
         super().delete()
         self.fishes.remove(self)
 
-    def get_image_for_draw(self):
+    def get_rotated_image(self):
+        image = self.get_image_for_draw()
+        scale = self.size / self.image.get_width()
         new_height = (self.size / self.image.get_width()) * self.image.get_height()
-        return pygame.transform.scale(self.image, (self.size, new_height))
+        image = pygame.transform.smoothscale(image, (self.size, new_height))
+        angle = self.direction.angle_to(Vector2(1, 0))
+        return pygame.transform.rotozoom(image, angle, 1)
 
     def swim(self, direction):
         self.position += self.direction * direction
@@ -98,6 +102,7 @@ class Fish(Drawable):
     def transfer_health_to(self, other):
         difference = (other.size ** 3 + 0.25 * self.size ** 3) ** (1 / 3) - other.size
         other.size += difference
+        other.size = min(self.max_size * 1.1, other.size)
         self.size -= difference
 
     def move(self, ratio):

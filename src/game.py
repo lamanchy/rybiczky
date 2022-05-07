@@ -49,7 +49,7 @@ class Game():
         self.player_fish = None
         self.background = Drawable(Vector2(0, 0), Vector2(0, 1), pygame.image.load(join(BASE_PATH, 'images', 'background.png')).convert())
         self.keys = None
-        self.handicap = None
+        self.difficulty = None
 
     def loop(self):
         self.keys = pygame.key.get_pressed()
@@ -94,7 +94,7 @@ class Game():
 
     def main_menu(self):
         # self.draw_background(Vector2(0, 0))
-        self.handicap = None
+        self.difficulty = None
         render_text('RYBICZKY', 'middle', self.head_font,
                     Vector2(Drawable.screen_size[0] / 2, Drawable.screen_size[1] / 2 - 50))
         render_text(['press p to play', 'press l to see leaderboards', 'press ESC to exit'], 'middle', self.font)
@@ -111,16 +111,15 @@ class Game():
         if self.keys[pygame.K_q]:
             self.mode = 'main_menu'
         if self.keys[pygame.K_k]:
-            self.handicap = 1.6
+            self.difficulty = 'kiki'
         if self.keys[pygame.K_y] or self.keys[pygame.K_z]:
-            self.handicap = 1.4
+            self.difficulty = 'zofka'
         if self.keys[pygame.K_m]:
-            self.handicap = 1.2
+            self.difficulty = 'martas'
         if self.keys[pygame.K_b]:
-            self.handicap = 1
+            self.difficulty = 'blondak'
 
-        if self.handicap is not None:
-            self.player_fish = PlayerFish(self.handicap)
+        if self.difficulty is not None:
             self.mode = 'game'
             self.restart()
 
@@ -131,7 +130,7 @@ class Game():
         lines = ['Leaderboards:']
         data = self.load_leaderboard_data()
         for item in data:
-            lines.append(f"{item['score']:.2f}s")
+            lines.append(f"{item['score']:.2f}s - {item['difficulty']}")
         lines.append('')
         lines.append('to quit press q')
         render_text(lines, 'middle', self.font)
@@ -141,7 +140,7 @@ class Game():
 
     def game(self):
         if self.player_fish is None and self.mode == 'game':
-            self.player_fish = PlayerFish(self.handicap)
+            self.player_fish = PlayerFish(self.difficulty)
 
         if time() - self.last_spawn_fish_time > 1:
             self.last_spawn_fish_time = time()
@@ -202,10 +201,17 @@ class Game():
     def restart(self):
         self.start_time = None
         self.end_time = None
-        current_handicap = self.player_fish.handicap
         while Fish.fishes:
             Fish.fishes[0].delete()
-        self.player_fish = PlayerFish(handicap=current_handicap)
+
+        difficulty_to_handicap = {
+            'kiki': 1.6,
+            'zofka': 1.4,
+            'martas': 1.2,
+            'blondak': 1,
+        }
+
+        self.player_fish = PlayerFish(handicap=difficulty_to_handicap[self.difficulty])
         if self.start_time is None:
             self.start_time = time()
         self.mode = 'game'
@@ -290,7 +296,7 @@ class Game():
             self.end_time = time()
 
         data = self.load_leaderboard_data()
-        data.append({'score': self.end_time - self.start_time})
+        data.append({'score': self.end_time - self.start_time, 'difficulty': self.difficulty})
         data.sort(key=lambda x: x['score'])
         data = data[:5]
         self.save_leaderboard_data(data)

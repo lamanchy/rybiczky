@@ -16,6 +16,7 @@ def render_text(text, orientation, font, position=None):
     line_height = font.get_height() + 2
     start_height = position.y
     text_width_coefficient = 0
+    base_height = font.render('A', True, (0, 0, 0)).get_height()
 
     if orientation == 'right':
         text_width_coefficient = 1
@@ -25,9 +26,11 @@ def render_text(text, orientation, font, position=None):
         text_width_coefficient = 1/2
 
     for i, line in enumerate(text):
-        text_surface = font.render(line, False, (0, 0, 0))
-        vector = (position.x - text_surface.get_width() * text_width_coefficient, start_height + line_height * i)
-        screen.blit(text_surface, vector)
+        text_surface = font.render(line, True, (0, 0, 0))
+        x = position.x - text_surface.get_width() * text_width_coefficient
+        y = start_height + line_height * i
+        y = y - text_surface.get_height() + base_height
+        screen.blit(text_surface, (x, y))
     
     
     
