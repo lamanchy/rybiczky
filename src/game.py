@@ -274,6 +274,8 @@ class Game():
         lines = []
         if DEBUG:
             lines.append(f'FPS: {int(1 / (self.duration + 0.0001))}')
+            if self.player_fish is not None:
+                lines.append(f'Player handicap: {self.player_fish.get_handicap()}')
         if print_score:
             lines.append(f'Score: {self.player_fish.size - PlayerFish.starting_size * SCALE}')
             lines.append(f'Time: {int(time() - self.start_time)}')

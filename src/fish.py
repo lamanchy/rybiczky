@@ -11,9 +11,12 @@ class Fish(Drawable):
     min_size = 50 * SCALE
     max_size = 300 * SCALE
 
+    def get_handicap(self):
+        return self.handicap
+
     def get_value_based_on_size(self, start, end):
         result = (end - start) * (self.size - self.min_size) / (self.max_size - self.min_size) + start
-        return result * SCALE * self.handicap
+        return result * SCALE * self.get_handicap()
 
     @property
     def acceleration_force(self):
