@@ -54,15 +54,13 @@ class ComputerFish(Fish):
             vector = relative_position - self.position
             self.position += 1.9 * vector
 
-            category = self.size % 300*SCALE
-    #TODO puvodne bylo po 30 a %120 - predelat tak aby to nebylo podle modulo deleni ale podle velikosti fixne * ratio
-            if category <= 50*SCALE:
+            if self.size <= 50:
                 self.image = pygame.image.load(join(BASE_PATH, 'images', 'more_smallest_fish.png')).convert_alpha()
-            elif category <= 100*SCALE:
+            elif self.size <= 100:
                 self.image = pygame.image.load(join(BASE_PATH, 'images', 'smallest_fish.png')).convert_alpha()
-            elif category <= 150*SCALE:
+            elif self.size <= 150:
                 self.image = pygame.image.load(join(BASE_PATH, 'images', 'medium_fish.png')).convert_alpha()
-            elif category <= 200*SCALE:
+            elif self.size <= 200:
                 self.image = pygame.image.load(join(BASE_PATH, 'images', 'big_fish.png')).convert_alpha()
             else:
                 self.image = pygame.image.load(join(BASE_PATH, 'images', 'biggest_fishRed.png')).convert_alpha()
