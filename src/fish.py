@@ -133,8 +133,8 @@ class Fish(Drawable):
 
         # determine speed change based on self.acceleration
         self.actual_speed += self.acceleration * ratio
-        if self.actual_speed < self.minimum_speed:
-            self.actual_speed = self.minimum_speed
-        self.swim(ratio * self.actual_speed)
+        # if self.actual_speed < self.minimum_speed:
+        #     self.actual_speed = self.minimum_speed
+        self.swim(ratio * abs(self.actual_speed))
         self.turn(self.turning_speed * self.turning)
 

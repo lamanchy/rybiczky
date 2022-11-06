@@ -2,6 +2,7 @@ import json
 from os.path import exists
 from os.path import join
 from random import randint
+from sre_constants import ASSERT
 from time import time
 
 import pygame
@@ -47,7 +48,8 @@ class Game():
         self.running = True
         self.last_spawn_fish_time = time()
         self.player_fish = None
-        self.background = Drawable(Vector2(0, 0), Vector2(0, 1), pygame.image.load(join(BASE_PATH, 'images', 'background.png')).convert())
+        self.background = Drawable(Vector2(0, 0), Vector2(0, 1),
+                                   pygame.image.load(join(BASE_PATH, 'images', 'background.png')).convert())
         self.keys = None
         self.difficulty = None
 
@@ -90,6 +92,7 @@ class Game():
         if self.mode == 'fail':
             self.fail()
 
+
         pygame.display.flip()
 
     def main_menu(self):
@@ -106,8 +109,8 @@ class Game():
             self.running = False
 
     def new_game(self):
-        render_text(['Choose your difficulty:', 'Kiki (k)', 'Žofka (z)', 'Marťas (m)', 'Blonďák (b)'], 'middle',
-                    self.font)
+        render_text(['Choose your difficulty:', 'Kiki (k)', 'Žofka (z)', 'Marťas (m)', 'Blonďák (b)'
+                     '', 'q to go back'], 'middle', self.font)
         if self.keys[pygame.K_q]:
             self.mode = 'main_menu'
         if self.keys[pygame.K_k]:
@@ -129,8 +132,12 @@ class Game():
     def leaderboard(self):
         lines = ['Leaderboards:']
         data = self.load_leaderboard_data()
-        for item in data:
-            lines.append(f"{item['score']:.2f}s - {item['difficulty']}")
+        for difficuly, scores in data.items():
+            lines += [
+                '',
+                difficuly
+            ] + [f'{score:.2f}s' for score in scores]
+
         lines.append('')
         lines.append('to quit press q')
         render_text(lines, 'middle', self.font)
@@ -186,17 +193,19 @@ class Game():
         self.print_stats(self.mode == 'game')
 
 
-
     def won(self):
         render_text(f'YOU WON - time: {int(self.end_time - self.start_time)}s', 'middle', self.font)
 
     def fail(self):
         render_text([
-            'You got eaten.',
-            'Press r to restart'
+            "You've got eaten.",
+            'Press r to restart',
+            'Press q to quit'
         ], 'middle', self.font)
         if self.keys[pygame.K_r]:
             self.restart()
+        if self.keys[pygame.K_q]:
+            self.mode = 'main_menu'
 
     def restart(self):
         self.start_time = None
@@ -279,6 +288,8 @@ class Game():
         if print_score:
             lines.append(f'Score: {self.player_fish.size - PlayerFish.starting_size * SCALE}')
             lines.append(f'Time: {int(time() - self.start_time)}')
+            lines += ['q to quit', 'r to restart']
+
         render_text(lines, 'left', self.font, Vector2(0, 0))
 
     def run(self):
@@ -298,9 +309,11 @@ class Game():
             self.end_time = time()
 
         data = self.load_leaderboard_data()
-        data.append({'score': self.end_time - self.start_time, 'difficulty': self.difficulty})
-        data.sort(key=lambda x: x['score'])
-        data = data[:5]
+        difficulty_data = data.setdefault(self.difficulty, [])
+        difficulty_data.append(self.end_time - self.start_time)
+        difficulty_data.sort()
+        data[self.difficulty] = difficulty_data[:5]
+
         self.save_leaderboard_data(data)
 
     def load_leaderboard_data(self):
@@ -308,7 +321,7 @@ class Game():
             with open(self.leaderboards_file_name, 'r') as f:
                 return json.load(f)
 
-        return []
+        return {}
 
     def save_leaderboard_data(self, data):
         with open(self.leaderboards_file_name, 'w') as f:

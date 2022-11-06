@@ -26,7 +26,7 @@ def render_text(text, orientation, font, position=None):
         text_width_coefficient = 1/2
 
     for i, line in enumerate(text):
-        text_surface = font.render(line, True, (0, 0, 0))
+        text_surface = font.render(str(line), True, (0, 0, 0))
         x = position.x - text_surface.get_width() * text_width_coefficient
         y = start_height + line_height * i
         y = y - text_surface.get_height() + base_height
